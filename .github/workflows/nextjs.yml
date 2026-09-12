@@ -38,22 +38,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run unit and component tests
-        run: npm test -- --run
-
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright E2E tests
-        run: npx playwright test
+        run: npm run test
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v6
         with:
-            name: playwright-report
-            path: playwright-report/
-            retention-days: 7
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 
 
   # --------------------------------
@@ -66,25 +63,30 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
+      # Environment variables required by Next.js
+      # during the production build
       - name: Build Next.js application
+        env:
+          NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
         run: npm run build
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./out
 
