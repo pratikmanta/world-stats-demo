@@ -1,4 +1,4 @@
-# World Bank Data Copilot
+# World Stats Demo
 
 Explore World Bank development indicators with a map and an AI copilot.
 
